@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import ListaEstaciones from "./listado-estaciones"
+import MyVerticallyCenteredModal from "./popUp"
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 function ResumenEmpresas(){
-
+    const [modalShow, setModalShow] = useState(false);
     const [networks, setNetworks] = useState([])
+    const [company, setCompany] = useState([])
     const url = "http://api.citybik.es/v2/networks"
     const redirect = "http://api.citybik.es"
 
@@ -21,20 +25,30 @@ function ResumenEmpresas(){
         console.log(response.networks)
     }
 
+    const fetchData2 = async (href) => {
+        let newLink= redirect + href
+        const response = await fetch(newLink, {method: 'GET'})
+        .then(response => response.json())
+        .catch(error => console.log(error))
+
+        setCompany(response.network)
+        
+
+    }
+
 
     return(
-        <div>
+        <div className="content">
             {networks.map(network => {
-                var newLink= redirect + network.href
+                
 
                 return(
                     <div key={network.id}>
                         <p>Nombre de la red: {network.name}</p>
                         <p>Nombre de la Compañía: {network.company}</p>
                         <p>Pais: {network.location.country}</p>
-
-                        <p>href: {newLink}</p>
-                        {/* <a href={newLink} target={'_blank'} rel="noreferrer"> -API</a><br /> */}
+                        
+                        <Button variant="primary" onClick={() => setModalShow(true)}>Estaciones</Button>
                         <hr></hr>
                     </div>
 
@@ -42,6 +56,7 @@ function ResumenEmpresas(){
 
                 )
             })}
+            <MyVerticallyCenteredModal data={company} show={modalShow} onHide={() => setModalShow(false)}/>
         </div>
     )
 }
