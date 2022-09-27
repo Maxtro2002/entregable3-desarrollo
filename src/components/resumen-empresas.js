@@ -1,78 +1,82 @@
-import { useEffect, useState } from "react"
-import MyVerticallyCenteredModal from "./popUp"
-import Button from 'react-bootstrap/Button';
+import { useEffect, useState } from "react";
+import MyVerticallyCenteredModal from "./popUp";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
-import Card from 'react-bootstrap/Card';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
+import ReactCountryFlag from "react-country-flag";
+import React from "react";
 
+function ResumenEmpresas() {
+  const [modalShow, setModalShow] = useState(false);
+  const [networks, setNetworks] = useState([]);
+  const [company, setCompany] = useState([]);
+  const url = "http://api.citybik.es/v2/networks";
+  const redirect = "http://api.citybik.es";
 
-function ResumenEmpresas(){
-    const [modalShow, setModalShow] = useState(false);
-    const [networks, setNetworks] = useState([])
-    const [company, setCompany] = useState([])
-    const url = "http://api.citybik.es/v2/networks"
-    const redirect = "http://api.citybik.es"
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    useEffect(() => {
-        fetchData()
-    }, [])
+  const fetchData = async () => {
+    const response = await fetch(url, { method: "GET" })
+      .then((response) => response.json())
+      .catch((error) => console.log(error));
 
+    setNetworks(response.networks);
+  };
 
-    const fetchData = async () =>{
-        const response = await fetch(url, {method: 'GET'})
-        .then(response => response.json())
-        .catch(error => console.log(error))
+  const fetchData2 = async (href) => {
+    let newLink = redirect + href;
+    const response = await fetch(newLink, { method: "GET" })
+      .then((response) => response.json())
+      .catch((error) => console.log(error));
 
-        setNetworks(response.networks)
-    }
+    setCompany(response.network);
+    setModalShow(true);
+  };
 
-    const fetchData2 = async (href) => {
-        let newLink= redirect + href
-        const response = await fetch(newLink, {method: 'GET'})
-        .then(response => response.json())
-        .catch(error => console.log(error))
+  return (
+    <div className="content">
+      <h1 className="m-4">Empresas</h1>
+      <div>
+        {modalShow ? (
+          <MyVerticallyCenteredModal
+            data={company}
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+          />
+        ) : null}
+      </div>
+      <div className="cards__container">
+        {networks.map((network) => {
+          return (
+            <Card key={network.id}>
+              <Card.Body>
+                <Card.Title>Nombre de red: {network.name}</Card.Title>
+                <Card.Text>Nombre de la Compañía: {network.company}</Card.Text>
+                <Card.Text>
+                  Pais: {network.location.country} -{" "}
+                  <ReactCountryFlag
+                    countryCode={network.location.country}
+                    svg
+                  />
+                </Card.Text>
+              </Card.Body>
 
-        setCompany(response.network)
-        setModalShow(true)
-        
-
-    }
-
-
-    return(
-        <div className="content">
-            <div>
-                {modalShow ? <MyVerticallyCenteredModal data={company} show={modalShow} onHide={() => setModalShow(false)}/>
-                : null}
-            </div>
-            {networks.map(network => {
-                
-
-                return(
-                    <Row xs={1} md={2} className="g-4">
-                        {Array.from({ length: 4 }).map((_, idx) => (
-                        <Col>
-                            <Card key={network.id}>
-                                <Card.Body>
-                                    <Card.Title>{network.name}</Card.Title>
-                                    <Card.Text>Nombre de la Compañía: {network.company}</Card.Text>
-                                    <Card.Text>Pais: {network.location.country}</Card.Text>
-                                </Card.Body>
-
-                                <Button variant="success" onClick={() => fetchData2(network.href)}>Estaciones</Button>
-                                <hr></hr>
-                            </Card>
-                            </Col>
-                        ))}
-                    </Row>
-
-                )
-            })}
-
-            
-        </div>
-    )
+              <Button
+                variant="success"
+                onClick={() => fetchData2(network.href)}
+                className="m-4"
+              >
+                Estaciones
+              </Button>
+              <br />
+            </Card> 
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
-export default ResumenEmpresas
+export default ResumenEmpresas;
