@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react"
-import ListaEstaciones from "./listado-estaciones"
 import MyVerticallyCenteredModal from "./popUp"
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+
 
 function ResumenEmpresas(){
     const [modalShow, setModalShow] = useState(false);
@@ -22,7 +25,6 @@ function ResumenEmpresas(){
         .catch(error => console.log(error))
 
         setNetworks(response.networks)
-        console.log(response.networks)
     }
 
     const fetchData2 = async (href) => {
@@ -32,6 +34,7 @@ function ResumenEmpresas(){
         .catch(error => console.log(error))
 
         setCompany(response.network)
+        setModalShow(true)
         
 
     }
@@ -39,24 +42,35 @@ function ResumenEmpresas(){
 
     return(
         <div className="content">
+            <div>
+                {modalShow ? <MyVerticallyCenteredModal data={company} show={modalShow} onHide={() => setModalShow(false)}/>
+                : null}
+            </div>
             {networks.map(network => {
                 
 
                 return(
-                    <div key={network.id}>
-                        <p>Nombre de la red: {network.name}</p>
-                        <p>Nombre de la Compañía: {network.company}</p>
-                        <p>Pais: {network.location.country}</p>
-                        
-                        <Button variant="primary" onClick={() => setModalShow(true)}>Estaciones</Button>
-                        <hr></hr>
-                    </div>
+                    <Row xs={1} md={2} className="g-4">
+                        {Array.from({ length: 4 }).map((_, idx) => (
+                        <Col>
+                            <Card key={network.id}>
+                                <Card.Body>
+                                    <Card.Title>{network.name}</Card.Title>
+                                    <Card.Text>Nombre de la Compañía: {network.company}</Card.Text>
+                                    <Card.Text>Pais: {network.location.country}</Card.Text>
+                                </Card.Body>
 
-
+                                <Button variant="success" onClick={() => fetchData2(network.href)}>Estaciones</Button>
+                                <hr></hr>
+                            </Card>
+                            </Col>
+                        ))}
+                    </Row>
 
                 )
             })}
-            <MyVerticallyCenteredModal data={company} show={modalShow} onHide={() => setModalShow(false)}/>
+
+            
         </div>
     )
 }
