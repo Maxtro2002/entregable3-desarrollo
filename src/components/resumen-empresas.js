@@ -8,8 +8,9 @@ import React from "react";
 
 function ResumenEmpresas() {
   const [modalShow, setModalShow] = useState(false);
-  const [networks, setNetworks] = useState([]);
-  const [company, setCompany] = useState([]);
+  const [networks, setNetworks] = useState(null);
+  const [company, setCompany] = useState(null);
+
   const url = "http://api.citybik.es/v2/networks";
   const redirect = "http://api.citybik.es";
 
@@ -33,11 +34,25 @@ function ResumenEmpresas() {
 
     setCompany(response.network);
     setModalShow(true);
+
   };
+
+
+  if (!networks)
+    return (
+      <div>
+        <img
+          src="https://cdn.dribbble.com/users/267/screenshots/1927432/loading.gif"
+          alt="cargando"
+        />
+        <h1>Cargando...</h1>
+      </div>
+    );
 
   return (
     <div className="content">
       <h1 className="m-4">Empresas</h1>
+
       <div>
         {modalShow ? (
           <MyVerticallyCenteredModal
@@ -64,14 +79,14 @@ function ResumenEmpresas() {
               </Card.Body>
 
               <Button
-                variant="success"
+                variant="outline-primary"
                 onClick={() => fetchData2(network.href)}
                 className="m-4"
               >
                 Estaciones
               </Button>
               <br />
-            </Card> 
+            </Card>
           );
         })}
       </div>
