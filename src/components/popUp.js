@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
@@ -73,9 +73,6 @@ function MyVerticallyCenteredModal(props) {
                   <Card.Title>Estación</Card.Title>
                   <Card.Title>{station.name}</Card.Title>
                   <Card.Text>
-                    Última Actualización: {station.timestamp}
-                  </Card.Text>
-                  <Card.Text>
                     Bicicicletas Libres:{" "}
                     {station.free_bikes === null ? msg : station.free_bikes}
                   </Card.Text>
@@ -87,6 +84,9 @@ function MyVerticallyCenteredModal(props) {
                     Cantida de espacios totales: {slots1 + slots2}
                   </Card.Text>
                 </Card.Body>
+                <Card.Footer>
+                  Última Actualización: {station.timestamp}
+                </Card.Footer>
               </Card>
             );
           })}
