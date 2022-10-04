@@ -1,4 +1,4 @@
-import useState from "react";
+import React, {useState} from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Card from "react-bootstrap/Card";
@@ -10,8 +10,8 @@ function MyVerticallyCenteredModal(props) {
   const stations = props.data.stations;
   const msg = "Dato no encontrado";
 
-  const [all_free_bikes, setAllFB] = useState();
-  const [all_empty_slots, setAllES] = useState();
+  const [all_free_bikes, setAllFB] = useState(0);
+  const [all_empty_slots, setAllES] = useState(0);
 
   const popover = (
     <Popover id="popover-basic">
